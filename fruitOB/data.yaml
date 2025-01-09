@@ -1,0 +1,13 @@
+names:
+- apple
+- apricot
+- banana
+- grapes
+- kiwi
+- melon
+- cherry
+- potato
+- cat
+nc: 9
+train: /labeled_data/fruitOB/train/images
+val: /labeled_data/fruitOB/valid/images

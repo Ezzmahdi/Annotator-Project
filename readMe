@@ -1,0 +1,185 @@
+# CVAT Integration Tools
+
+A comprehensive Python toolkit for automating interactions with CVAT (Computer Vision Annotation Tool). This toolkit streamlines both classification and object detection workflows through a simple, intuitive interface.
+
+## 🚀 Key Features
+
+- **Authentication & Project Management**
+  - Secure token-based authentication
+  - Automated project creation and task management
+  - Persistent credential storage
+
+- **Data Import/Export**
+  - Support for classification and object detection datasets
+  - Automatic format conversion (YOLO, COCO)
+  - Batch processing with progress tracking
+  - Structured output organization
+  - Built-in validation and error handling
+
+## 📋 Prerequisites
+
+### System Requirements
+- Python 3.7+
+- Docker and Docker Compose
+
+### Python Dependencies
+```bash
+pip install requests Pillow cvat-sdk
+```
+
+## 🔧 Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/cvat-ai/cvat
+cd cvat-develop
+```
+
+2. Start CVAT:
+```bash
+docker-compose up -d
+```
+
+## 🏗️ Architecture
+
+The toolkit consists of three core modules:
+
+### 1. Auth Module
+Handles authentication and project setup:
+```python
+from Auth import initialize_cvat_project
+
+project = initialize_cvat_project(
+    cvat_url='http://localhost:8080',
+    username='admin',
+    password='admin',
+    project_name='My Dataset'
+)
+```
+
+### 2. Import Module
+Manages data ingestion and preprocessing:
+```python
+from Import import Import
+
+Import(
+    cvat_url='http://localhost:8080',
+    headers={'Authorization': 'Token YOUR_TOKEN'},
+    project_id=1,
+    classification=True,
+    images_dir='path/to/data'
+)
+```
+
+### 3. Export Module
+Handles data export and format conversion:
+```python
+from Export import Export
+
+Export(
+    cvat_url='http://localhost:8080',
+    headers={'Authorization': 'Token YOUR_TOKEN'},
+    task_id=1,
+    output_dir='exported_data',
+    classification=True
+)
+```
+
+## 📁 Data Format Requirements
+
+### Classification Projects
+```
+dataset/
+├── class1/
+│   ├── image1.jpg
+│   ├── image2.jpg
+├── class2/
+│   ├── image3.jpg
+│   └── image4.jpg
+```
+
+### Object Detection Projects
+```
+dataset/
+├── images/
+│   ├── image1.jpg
+│   ├── image2.jpg
+├── labels/
+│   ├── image1.txt
+│   └── image2.txt
+```
+
+YOLO format for labels:
+```
+<class_id> <x_center> <y_center> <width> <height>
+```
+
+## 🎯 Quick Start Examples
+
+### Classification Workflow
+```python
+from Auth import initialize_cvat_project
+from Import import Import
+from Export import Export
+
+# Initialize project
+project = initialize_cvat_project(
+    cvat_url='http://localhost:8080',
+    username='admin',
+    password='admin',
+    project_name='Fruit Classification',
+    task_name='Batch 1'
+)
+
+# Import data
+Import(
+    cvat_url='http://localhost:8080',
+    headers={'Authorization': f'Token {project["token"]}'},
+    project_id=project['project_id'],
+    classification=True,
+    images_dir='datasets/fruits'
+)
+
+# Export annotations
+Export(
+    cvat_url='http://localhost:8080',
+    headers={'Authorization': f'Token {project["token"]}'},
+    task_id=project['task_id'],
+    output_dir='exported_data',
+    classification=True
+)
+```
+
+## 🔍 Troubleshooting Guide
+
+### Common Issues & Solutions
+
+#### Authentication Failures
+- Verify CVAT is running (`docker ps`)
+- Check credentials
+- Ensure correct CVAT URL
+- Verify network connectivity
+
+#### Import/Export Issues
+- Check file permissions
+- Verify supported image formats
+- Ensure correct directory structure
+- Check available disk space
+
+### Debug Mode
+Enable detailed logging:
+```bash
+export CVAT_DEBUG=1
+```
+
+### Error Codes
+- 401: Authentication failed
+- 403: Insufficient permissions
+- 404: Resource not found
+- 500: Internal server error
+
+## 📚 Additional Resources
+
+- [CVAT Documentation](https://opencv.github.io/cvat/docs/)
+- [GitHub Issues](https://github.com/opencv/cvat/issues)
+- [Stack Overflow [cvat]](https://stackoverflow.com/questions/tagged/cvat)
